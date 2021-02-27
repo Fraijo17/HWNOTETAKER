@@ -7,22 +7,34 @@ const writeFileAsync = util.promisify(fs.writeFile);
 const readFileAsync = util.promisify(fs.readFile);
 
 
-    router.get("/notes," function(req, res){
+    router.get("/notes", function(req, res){
+        return readFileAsync("db/db.json", "utf8")
+        .then(function(data){
+            console.log(data)
+            data = JSON.parse(data);
+            return res.json(data)
+        })
+    });
+
+    router.post("/notes/", function(req, res){
         return readFileAsync("db/db.json", "utf8")
         .then(function(data){
             console.log(data)
             data = JSON.parse(data);
             data.push({...req.body, id:uuid()});
 
-            return writeFileAsync("db/db.json", JSON.stringify(data))
-            .then(function(){
-                console.log('random');
-                return res.json({ok:true})
+
+
+        return writeFileAsync("db/db.json", JSON.stringify(data))
+        .then(function(){
+            console.log('random');
+            return res.json({ok:true})
             })
             .catch(function(err){
                 throw err
-            })
+                })
         })
+        
     });
 
 
